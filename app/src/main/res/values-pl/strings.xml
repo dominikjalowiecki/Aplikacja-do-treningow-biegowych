@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Runner App</string>
+    <string name="hello_world">Witaj Świecie!</string>
+    <string name="about_text">Runner App jest to aplikacja wspomagająca wykonywanie treningów biegowych.\n\nAplikacja umożliwia przeprowadzanie treningów na określony dystans w określonym czasie. Aplikacja informuje użytkownika o aktualnym tempie biegu. Po zakończeniu treningu możliwe jest udostępnienie wyniku swoim znajomym.\n\nW zakładce \"Historia\" widoczne są poprzednie treningi, co umożliwia śledzenie postępów.</string>
+</resources>

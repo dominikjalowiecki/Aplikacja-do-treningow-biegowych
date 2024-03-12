@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="fragment_style">
+        <item name="android:layout_marginHorizontal">@dimen/horizontal_margin</item>
+        <item name="android:layout_marginVertical">@dimen/vertical_margin</item>
+    </style>
+
+    <style name="CustomBodyMedium" parent="TextAppearance.Material3.BodyMedium">
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="CustomBodyLarge" parent="TextAppearance.Material3.BodyLarge">
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="CustomHeadline6" parent="TextAppearance.MaterialComponents.Headline6">
+        <item name="android:textSize">24sp</item>
+    </style>
+
+    <style name="CustomActionBarTitle" parent="TextAppearance.Material3.ActionBar.Title">
+        <item name="android:textColor">@color/abc_hint_foreground_material_dark</item>
+        <item name="android:textSize">24sp</item>
+    </style>
+
+    <style name="CustomActionBar" parent="Widget.Material3.ActionBar.Solid">
+        <item name="theme">@style/ThemeOverlay.MaterialComponents.Dark.ActionBar</item>
+        <item name="background">@color/md_theme_dark_primary</item>
+        <item name="titleTextStyle">@style/CustomActionBarTitle</item>
+    </style>
+</resources>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_navigation"
+    app:startDestination="@id/titleFragment">
+
+    <fragment
+        android:id="@+id/titleFragment"
+        android:name="pl.toadres.djalowiecki.aplikacjadotreningowbiegowych.screens.title.TitleFragment"
+        android:label="@string/app_name"
+        tools:layout="@layout/fragment_title">
+        <action
+            android:id="@+id/action_titleFragment_to_trainingFragment"
+            app:destination="@id/trainingFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_left" />
+    </fragment>
+    <fragment
+        android:id="@+id/aboutFragment"
+        android:name="pl.toadres.djalowiecki.aplikacjadotreningowbiegowych.screens.about.AboutFragment"
+        android:label="@string/about"
+        tools:layout="@layout/fragment_about" />
+    <fragment
+        android:id="@+id/historyFragment"
+        android:name="pl.toadres.djalowiecki.aplikacjadotreningowbiegowych.screens.history.HistoryFragment"
+        android:label="@string/history"
+        tools:layout="@layout/fragment_history">
+        <action
+            android:id="@+id/action_historyFragment_to_resultFragment"
+            app:destination="@id/resultFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_left" />
+    </fragment>
+    <fragment
+        android:id="@+id/resultFragment"
+        android:name="pl.toadres.djalowiecki.aplikacjadotreningowbiegowych.screens.result.ResultFragment"
+        android:label="@string/result"
+        tools:layout="@layout/fragment_result">
+        <argument
+            android:name="training"
+            app:argType="pl.toadres.djalowiecki.aplikacjadotreningowbiegowych.database.Training" />
+    </fragment>
+    <fragment
+        android:id="@+id/trainingFragment"
+        android:name="pl.toadres.djalowiecki.aplikacjadotreningowbiegowych.screens.training.TrainingFragment"
+        android:label="@string/training"
+        tools:layout="@layout/fragment_training">
+        <argument
+            android:name="trainingId"
+            app:argType="long" />
+        <action
+            android:id="@+id/action_trainingFragment_to_resultFragment"
+            app:destination="@id/resultFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_left"
+            app:popUpTo="@id/titleFragment" />
+    </fragment>
+</navigation>

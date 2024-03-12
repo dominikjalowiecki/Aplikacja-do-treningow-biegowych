@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="titleViewModel"
+            type="pl.toadres.djalowiecki.aplikacjadotreningowbiegowych.screens.title.TitleViewModel"/>
+    </data>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".screens.title.TitleFragment">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            style="@style/fragment_style"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+            <TextView
+                android:id="@+id/startTrainingText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/large_margin"
+                android:text="@string/start_training"
+                android:textAppearance="?attr/textAppearanceHeadline6"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@+id/targetTimeText"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed" />
+
+            <TextView
+                android:id="@+id/targetTimeText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/target_time"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                app:layout_constraintBottom_toTopOf="@+id/targetTime"
+                app:layout_constraintEnd_toEndOf="@+id/startTrainingText"
+                app:layout_constraintStart_toStartOf="@+id/startTrainingText"
+                app:layout_constraintTop_toBottomOf="@+id/startTrainingText"
+                app:layout_constraintVertical_chainStyle="packed" />
+
+            <EditText
+                android:id="@+id/targetTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/vertical_margin"
+                android:layout_marginBottom="@dimen/vertical_margin"
+                android:maxLength="3"
+                android:ems="8"
+                android:inputType="number"
+                android:text="@{titleViewModel.targetTimeString}"
+                android:textAlignment="center"
+                app:layout_constraintBottom_toTopOf="@+id/targetDistanceText"
+                app:layout_constraintEnd_toEndOf="@+id/targetTimeText"
+                app:layout_constraintStart_toStartOf="@+id/targetTimeText"
+                app:layout_constraintTop_toBottomOf="@+id/targetTimeText"
+                app:addTextChangedListener="@{titleViewModel.getTargetTimeWatcher}" />
+
+            <TextView
+                android:id="@+id/targetDistanceText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/target_distance"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                app:layout_constraintBottom_toTopOf="@+id/targetDistance"
+                app:layout_constraintEnd_toEndOf="@+id/targetTime"
+                app:layout_constraintStart_toStartOf="@+id/targetTime"
+                app:layout_constraintTop_toBottomOf="@+id/targetTime" />
+
+            <EditText
+                android:id="@+id/targetDistance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/vertical_margin"
+                android:layout_marginBottom="@dimen/vertical_margin"
+                android:maxLength="3"
+                android:ems="8"
+                android:inputType="number"
+                android:text="@{titleViewModel.targetDistanceString}"
+                android:textAlignment="center"
+                app:layout_constraintBottom_toTopOf="@+id/startTrainingButton"
+                app:layout_constraintEnd_toEndOf="@+id/targetDistanceText"
+                app:layout_constraintStart_toStartOf="@+id/targetDistanceText"
+                app:layout_constraintTop_toBottomOf="@+id/targetDistanceText"
+                app:addTextChangedListener="@{titleViewModel.getTargetDistanceWatcher}"/>
+
+            <Button
+                android:id="@+id/startTrainingButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/start_training"
+                android:enabled="@{!titleViewModel.trainingAlreadyStarted}"
+                android:onClick="@{() -> titleViewModel.onStartTraining()}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/targetDistance"
+                app:layout_constraintStart_toStartOf="@+id/targetDistance"
+                app:layout_constraintTop_toBottomOf="@+id/targetDistance" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
+</layout>

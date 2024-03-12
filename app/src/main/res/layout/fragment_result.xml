@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="training"
+            type="pl.toadres.djalowiecki.aplikacjadotreningowbiegowych.database.Training"/>
+    </data>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".screens.training.ResultFragment">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            style="@style/fragment_style"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+            <TextView
+                android:id="@+id/distanceText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
+                app:distanceString="@{training}"
+                app:format="@{@string/distance_text}"
+                app:layout_constraintBottom_toTopOf="@+id/timeText"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed"
+                tools:text="Distance: 1.123 km" />
+
+            <TextView
+                android:id="@+id/timeText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
+                app:layout_constraintBottom_toTopOf="@+id/paceText"
+                app:layout_constraintEnd_toEndOf="@+id/distanceText"
+                app:layout_constraintStart_toStartOf="@+id/distanceText"
+                app:layout_constraintTop_toBottomOf="@+id/distanceText"
+                app:timeString="@{training}"
+                app:format="@{@string/time_text}"
+                tools:text="Time: 00:30:12" />
+
+            <TextView
+                android:id="@+id/paceText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
+                app:layout_constraintBottom_toTopOf="@+id/speedText"
+                app:layout_constraintEnd_toEndOf="@+id/timeText"
+                app:layout_constraintStart_toStartOf="@+id/timeText"
+                app:layout_constraintTop_toBottomOf="@+id/timeText"
+                app:paceString="@{training}"
+                app:format="@{@string/pace_text}"
+                tools:text="Pace: 05:30 m:s/km" />
+
+            <TextView
+                android:id="@+id/speedText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
+                app:layout_constraintBottom_toTopOf="@+id/dateText"
+                app:layout_constraintEnd_toEndOf="@+id/paceText"
+                app:layout_constraintStart_toStartOf="@+id/paceText"
+                app:layout_constraintTop_toBottomOf="@+id/paceText"
+                app:speedString="@{training}"
+                app:format="@{@string/speed_text}"
+                tools:text="Speed: 4.873 km/h" />
+
+            <TextView
+                android:id="@+id/dateText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                app:dateString="@{training}"
+                app:format="@{@string/date_text}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/speedText"
+                app:layout_constraintStart_toStartOf="@+id/speedText"
+                app:layout_constraintTop_toBottomOf="@+id/speedText"
+                tools:text="Date: 11.03.2024 03:15:45" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
+</layout>
