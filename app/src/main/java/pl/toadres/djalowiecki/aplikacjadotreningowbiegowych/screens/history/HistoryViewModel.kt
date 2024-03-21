@@ -17,7 +17,7 @@ class HistoryViewModel(private val database: TrainingDao) :
     val trainings = database.getAllTrainings()
 
     val clearButtonVisible = trainings.map {
-        it?.isNotEmpty()
+        it.isNotEmpty()
     }
 
     private val _showSnackbarEvent = MutableLiveData<Boolean>()

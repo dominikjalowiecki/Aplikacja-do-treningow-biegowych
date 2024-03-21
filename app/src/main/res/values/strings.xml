@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Runner App</string>
+    <string name="app_name" translatable="false">Runner App</string>
     <string name="hello_world">Hello World!</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="share">Share</string>
@@ -13,15 +13,26 @@
     <string name="target_time">Target time (min)</string>
     <string name="target_distance">Target distance (km)</string>
     <string name="stop_training">Stop training</string>
-    <string name="share_text">My new training is %1$.3f km in time of %2$s #RunnerApp</string>
+    <string name="share_text">My training was %1$.3f km in time of %2$s #RunnerApp</string>
     <string name="distance_text">Distance: %1$.3f km</string>
     <string name="time_text">Time: %1$s</string>
     <string name="pace_text">Pace: %1$s m:s/km</string>
     <string name="speed_text">Speed: %1$.3f km/h</string>
     <string name="date_text">Date: %1$s</string>
     <string name="clear_history">Clear history</string>
-    <string name="history_cleared_message">History has been cleared.</string>
+    <string name="history_cleared_message">History has been cleared</string>
     <string name="header_text">Training history</string>
     <string name="channel_name">Training notifications</string>
-    <string name="channel_description">Runner App training notifications</string>
+    <string name="channel_description">Notifications informing about the training performe</string>
+    <string name="menu" translatable="false">Menu</string>
+    <string name="training_has_been_started">Training has been started</string>
+    <string name="training_in_progress">Training in progress…</string>
+    <string name="time_of_training_have_passed">%1$s of training time have passed</string>
+    <string name="distance_of_training_remaining">%1$.3f km of training distance remaining</string>
+    <string name="time_of_training_remaining">%1$s of training remaining</string>
+    <string name="your_running_pace_is_good">Your running pace is good, keep it up!</string>
+    <string name="your_running_pace_is_too_slow">Your running pace is too slow, speed up!</string>
+    <string name="training_finished">Training finished</string>
+    <string name="check_training_result_in_history">Check training result in history</string>
+    <string name="permissions_required">Location and background location permissions are required for this app to work properly</string>
 </resources>

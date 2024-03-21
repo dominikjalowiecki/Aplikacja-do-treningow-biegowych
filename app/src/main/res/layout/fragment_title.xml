@@ -38,6 +38,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/target_time"
                 android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:labelFor="@+id/targetTime"
                 app:layout_constraintBottom_toTopOf="@+id/targetTime"
                 app:layout_constraintEnd_toEndOf="@+id/startTrainingText"
                 app:layout_constraintStart_toStartOf="@+id/startTrainingText"
@@ -59,7 +60,8 @@
                 app:layout_constraintEnd_toEndOf="@+id/targetTimeText"
                 app:layout_constraintStart_toStartOf="@+id/targetTimeText"
                 app:layout_constraintTop_toBottomOf="@+id/targetTimeText"
-                app:addTextChangedListener="@{titleViewModel.getTargetTimeWatcher}" />
+                app:addTextChangedListener="@{titleViewModel.getTargetTimeWatcher}"
+                android:autofillHints="" />
 
             <TextView
                 android:id="@+id/targetDistanceText"
@@ -67,6 +69,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/target_distance"
                 android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:labelFor="@+id/targetDistance"
                 app:layout_constraintBottom_toTopOf="@+id/targetDistance"
                 app:layout_constraintEnd_toEndOf="@+id/targetTime"
                 app:layout_constraintStart_toStartOf="@+id/targetTime"
@@ -87,14 +90,15 @@
                 app:layout_constraintEnd_toEndOf="@+id/targetDistanceText"
                 app:layout_constraintStart_toStartOf="@+id/targetDistanceText"
                 app:layout_constraintTop_toBottomOf="@+id/targetDistanceText"
-                app:addTextChangedListener="@{titleViewModel.getTargetDistanceWatcher}"/>
+                app:addTextChangedListener="@{titleViewModel.getTargetDistanceWatcher}"
+                android:autofillHints="" />
 
             <Button
                 android:id="@+id/startTrainingButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/start_training"
-                android:enabled="@{!titleViewModel.trainingAlreadyStarted}"
+                android:enabled="@{!titleViewModel.trainingAlreadyStarted &amp;&amp; titleViewModel.permissionsGranted}"
                 android:onClick="@{() -> titleViewModel.onStartTraining()}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/targetDistance"

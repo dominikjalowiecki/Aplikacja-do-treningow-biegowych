@@ -17,6 +17,11 @@ class TitleViewModel(
     private val database: TrainingDao
 ) : ViewModel() {
 
+    private val _permissionsGranted = MutableLiveData(false)
+
+    val permissionsGranted: LiveData<Boolean>
+        get() = _permissionsGranted
+
     private val _navigateToTraining = MutableLiveData<Training?>()
     val navigateToTraining: LiveData<Training?>
         get() = _navigateToTraining
@@ -60,9 +65,18 @@ class TitleViewModel(
 
     private fun initializeTraining() {
         viewModelScope.launch {
-            _navigateToTraining.value = getLatestTrainingFromDatabase()
+            val training = getLatestTrainingFromDatabase()
+            if (_permissionsGranted.value == true) {
+                _navigateToTraining.value = training
+            } else {
+                if (training != null) {
+                    training.endTimeMilli = System.currentTimeMillis()
+                    update(training)
+                }
+            }
         }
     }
+
 
     private suspend fun getLatestTrainingFromDatabase(): Training? {
         return withContext(Dispatchers.IO) {
@@ -75,20 +89,27 @@ class TitleViewModel(
         }
     }
 
+
     private suspend fun insert(training: Training) {
         withContext(Dispatchers.IO) {
             database.insert(training)
         }
     }
 
+    private suspend fun update(training: Training) {
+        withContext(Dispatchers.IO) {
+            database.update(training)
+        }
+    }
+
     fun onStartTraining() {
         viewModelScope.launch {
             val startedTraining = Training()
-            if (_targetTime.value ?: 0 > 0) {
+            if ((_targetTime.value ?: 0) > 0) {
                 startedTraining.targetTimeMilli = _targetTime.value?.toLong()?.times(60000)
             }
 
-            if (_targetDistance.value ?: 0 > 0) {
+            if ((_targetDistance.value ?: 0) > 0) {
                 startedTraining.targetDistance = _targetDistance.value?.times(1000)
             }
 
@@ -102,5 +123,9 @@ class TitleViewModel(
         _targetTime.value = null
         _targetDistance.value = null
         _navigateToTraining.value = null
+    }
+
+    fun onPermissionsGranted() {
+        _permissionsGranted.value = true
     }
 }

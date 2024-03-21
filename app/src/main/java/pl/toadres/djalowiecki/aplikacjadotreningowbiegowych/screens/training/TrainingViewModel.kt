@@ -18,9 +18,9 @@ class TrainingViewModel(private val database: TrainingDao, private val trainingI
 
     fun getTraining() = training
 
-    private val _navigateToResult = MutableLiveData<Training?>()
-    val navigateToResult: LiveData<Training?>
-        get() = _navigateToResult
+//    private val _navigateToResult = MutableLiveData<Training?>()
+//    val navigateToResult: LiveData<Training?>
+//        get() = _navigateToResult
 
     init {
         training.addSource(database.getTrainingWithId(trainingId), training::setValue)
@@ -39,11 +39,11 @@ class TrainingViewModel(private val database: TrainingDao, private val trainingI
 
             update(stoppedTraining)
 
-            _navigateToResult.value = stoppedTraining
+//            _navigateToResult.value = stoppedTraining
         }
     }
 
-    fun onResultNavigated() {
-        _navigateToResult.value = null
-    }
+//    fun onResultNavigated() {
+//        _navigateToResult.value = null
+//    }
 }

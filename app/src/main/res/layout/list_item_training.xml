@@ -28,7 +28,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/baseline_directions_run_24"
-            app:tint="@color/md_theme_dark_tertiary" />
+            app:tint="@color/md_theme_dark_tertiary"
+            android:importantForAccessibility="no" />
 
         <TextView
             android:id="@+id/distanceText"

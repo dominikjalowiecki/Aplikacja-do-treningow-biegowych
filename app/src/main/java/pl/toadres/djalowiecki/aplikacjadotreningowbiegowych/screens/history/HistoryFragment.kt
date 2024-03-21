@@ -5,7 +5,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -19,7 +18,7 @@ class HistoryFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val binding: FragmentHistoryBinding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_history, container, false)
 
@@ -43,8 +42,8 @@ class HistoryFragment : Fragment() {
             }
         }
 
-        val adapter = TrainingAdapter(TrainingListener {
-            training -> historyViewModel.onTrainingClicked(training)
+        val adapter = TrainingAdapter(TrainingListener { training ->
+            historyViewModel.onTrainingClicked(training)
         })
 
         binding.trainingList.adapter = adapter
@@ -57,7 +56,8 @@ class HistoryFragment : Fragment() {
 
         historyViewModel.navigateToTrainingResult.observe(viewLifecycleOwner) {
             it?.let {
-                this.findNavController().navigate(HistoryFragmentDirections.actionHistoryFragmentToResultFragment(it))
+                this.findNavController()
+                    .navigate(HistoryFragmentDirections.actionHistoryFragmentToResultFragment(it))
                 historyViewModel.onTrainingResultNavigated()
             }
         }

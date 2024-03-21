@@ -17,7 +17,8 @@ import pl.toadres.djalowiecki.aplikacjadotreningowbiegowych.databinding.ListItem
 private const val ITEM_VIEW_TYPE_HEADER = 0
 private const val ITEM_VIEW_TYPE_ITEM = 1
 
-class TrainingAdapter(private val clickListener : TrainingListener) : ListAdapter<DataItem, RecyclerView.ViewHolder>(TrainingDiffCallback()) {
+class TrainingAdapter(private val clickListener: TrainingListener) :
+    ListAdapter<DataItem, RecyclerView.ViewHolder>(TrainingDiffCallback()) {
 
     private val adapterScope = CoroutineScope(Dispatchers.Default)
 
@@ -50,7 +51,7 @@ class TrainingAdapter(private val clickListener : TrainingListener) : ListAdapte
         }
     }
 
-    class TextViewHolder(view: View): RecyclerView.ViewHolder(view) {
+    class TextViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         companion object {
             fun from(parent: ViewGroup): TextViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
@@ -60,14 +61,15 @@ class TrainingAdapter(private val clickListener : TrainingListener) : ListAdapte
         }
     }
 
-    override fun getItemViewType(position: Int) : Int {
+    override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
             is DataItem.Header -> ITEM_VIEW_TYPE_HEADER
             is DataItem.TrainingItem -> ITEM_VIEW_TYPE_ITEM
         }
     }
 
-    class ViewHolder private constructor (val binding: ListItemTrainingBinding) : RecyclerView.ViewHolder(binding.root) {
+    class ViewHolder private constructor(val binding: ListItemTrainingBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(
             item: Training,
             clickListener: TrainingListener
@@ -104,11 +106,13 @@ class TrainingListener(val clickListener: (training: Training) -> Unit) {
 }
 
 sealed class DataItem {
-    data class TrainingItem(val training: Training): DataItem() {
+    data class TrainingItem(val training: Training) : DataItem() {
         override val id = training.trainingId
     }
-    object Header: DataItem() {
+
+    data object Header : DataItem() {
         override val id = Long.MIN_VALUE
     }
-    abstract val id : Long
+
+    abstract val id: Long
 }

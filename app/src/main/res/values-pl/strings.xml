@@ -1,6 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Runner App</string>
     <string name="hello_world">Witaj Świecie!</string>
+    <string name="hello_blank_fragment">Witaj pusty fragmencie</string>
+    <string name="share">Udostępnij</string>
+    <string name="about">O aplikacji</string>
+    <string name="history">Historia</string>
+    <string name="result">Rezultat</string>
+    <string name="training">Trening</string>
     <string name="about_text">Runner App jest to aplikacja wspomagająca wykonywanie treningów biegowych.\n\nAplikacja umożliwia przeprowadzanie treningów na określony dystans w określonym czasie. Aplikacja informuje użytkownika o aktualnym tempie biegu. Po zakończeniu treningu możliwe jest udostępnienie wyniku swoim znajomym.\n\nW zakładce \"Historia\" widoczne są poprzednie treningi, co umożliwia śledzenie postępów.</string>
+    <string name="start_training">Rozpocznij trening</string>
+    <string name="target_time">Docelowy czas (min)</string>
+    <string name="target_distance">Docelowy dystans (km)</string>
+    <string name="stop_training">Zakończ trening</string>
+    <string name="share_text">Mój trening wyniósł %1$.3f km w czasie %2$s #RunnerApp</string>
+    <string name="distance_text">Dystans: %1$.3f km</string>
+    <string name="time_text">Czas: %1$s</string>
+    <string name="pace_text">Tempo: %1$s m:s/km</string>
+    <string name="speed_text">Prędkość: %1$.3f km/h</string>
+    <string name="date_text">Data: %1$s</string>
+    <string name="clear_history">Wyczyść historię</string>
+    <string name="history_cleared_message">Historia została wyczyszczona</string>
+    <string name="header_text">Historia treningów</string>
+    <string name="channel_name">Powiadomienia o treningu</string>
+    <string name="channel_description">Powiadomienia informujące o wykonywanym treningu</string>
+    <string name="permissions_required">Do prawidłowego działania tej aplikacji wymagane są uprawnienia do lokalizacji i lokalizacji w tle</string>
+    <string name="training_has_been_started">Trening został rozpoczęty</string>
+    <string name="training_in_progress">Traning w toku…</string>
+    <string name="time_of_training_have_passed">Minęło %1$s czasu treningu</string>
+    <string name="distance_of_training_remaining">Pozostało %1$.3f km dystansu treningu</string>
+    <string name="time_of_training_remaining">Pozostało %1$s czasu treningu</string>
+    <string name="your_running_pace_is_good">Twoje tempo biegu jest dobre, tak trzymaj!</string>
+    <string name="training_finished">Trening zakończony</string>
+    <string name="check_training_result_in_history">Sprawdź wynik treningu w historii</string>
+    <string name="your_running_pace_is_too_slow">Twoje tempo biegu jest zbyt wolne, przyspiesz!</string>
 </resources>

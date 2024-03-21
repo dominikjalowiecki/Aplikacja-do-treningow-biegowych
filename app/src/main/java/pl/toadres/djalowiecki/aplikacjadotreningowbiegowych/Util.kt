@@ -4,10 +4,13 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
-import androidx.recyclerview.widget.RecyclerView
 import pl.toadres.djalowiecki.aplikacjadotreningowbiegowych.database.Training
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Locale
+
+const val CHANNEL_ID = "training_notifications"
+const val LOCATION_INTERVAL = 5000L
 
 @BindingAdapter("trainingString")
 fun TextView.setTrainingString(item: Training?) {
@@ -26,7 +29,8 @@ fun TextView.setDistanceString(item: Training?, format: String) {
 @BindingAdapter("timeString", "format")
 fun TextView.setTimeString(item: Training?, format: String) {
     item?.let {
-        val trainingTimeMilli = item.endTimeMilli!! - item.startTimeMilli
+        val trainingTimeMilli =
+            (item.endTimeMilli ?: System.currentTimeMillis()) - item.startTimeMilli
         text = format.format(getTimeStringFromMilli(trainingTimeMilli))
     }
 }
@@ -34,7 +38,8 @@ fun TextView.setTimeString(item: Training?, format: String) {
 @BindingAdapter("paceString", "format")
 fun TextView.setPaceString(item: Training?, format: String) {
     item?.let {
-        val trainingTimeMilli = item.endTimeMilli!! - item.startTimeMilli
+        val trainingTimeMilli =
+            (item.endTimeMilli ?: System.currentTimeMillis()) - item.startTimeMilli
         var paceTimeMilli = 0L
         if (item.distance > 0) {
             paceTimeMilli = trainingTimeMilli / item.distance * 1000
@@ -46,7 +51,8 @@ fun TextView.setPaceString(item: Training?, format: String) {
 @BindingAdapter("speedString", "format")
 fun TextView.setSpeedString(item: Training?, format: String) {
     item?.let {
-        val trainingTimeMilli = item.endTimeMilli!! - item.startTimeMilli
+        val trainingTimeMilli =
+            (item.endTimeMilli ?: System.currentTimeMillis()) - item.startTimeMilli
         var speed = 0.0
         if (item.distance > 0) {
             speed = item.distance.toDouble() / 1000 / trainingTimeMilli * 3600000
@@ -83,7 +89,7 @@ fun getTimeStringFromMilli(timeMilli: Long): String {
 }
 
 fun getDate(timeMilli: Long, dateFormat: String): String {
-    val formatter = SimpleDateFormat(dateFormat)
+    val formatter = SimpleDateFormat(dateFormat, Locale.US)
     val calendar = Calendar.getInstance()
     calendar.timeInMillis = timeMilli
 
@@ -105,5 +111,3 @@ class SimpleTextWatcher : TextWatcher {
         _onTextChanged = listener
     }
 }
-
-class TextItemViewHolder(val textView: TextView): RecyclerView.ViewHolder(textView)

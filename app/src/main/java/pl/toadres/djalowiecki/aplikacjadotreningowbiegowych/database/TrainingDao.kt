@@ -28,4 +28,10 @@ interface TrainingDao {
 
     @Query("SELECT * FROM training_table WHERE trainingId = :id")
     fun getTrainingWithId(id: Long): LiveData<Training>
+
+    @Query("UPDATE training_table SET distance = distance + :distance WHERE trainingId = :id")
+    fun updateTrainingDistance(id: Long, distance: Int)
+
+    @Query("UPDATE training_table SET end_time_milli = :endTimeMilli WHERE trainingId = :id")
+    fun finishTraining(id: Long, endTimeMilli: Long)
 }

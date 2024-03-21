@@ -18,29 +18,72 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/textView"
+                android:id="@+id/distanceText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/vertical_margin"
-                app:layout_constraintBottom_toTopOf="@+id/button"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
+                app:distanceString="@{trainingViewModel.training}"
+                app:format="@{@string/distance_text}"
+                app:layout_constraintBottom_toTopOf="@+id/timeText"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_chainStyle="packed"
-                app:trainingString="@{trainingViewModel.training}" />
+                tools:text="Distance: 1.123 km" />
 
-            <Button
-                android:id="@+id/button"
+            <TextView
+                android:id="@+id/timeText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
+                app:format="@{@string/time_text}"
+                app:layout_constraintBottom_toTopOf="@+id/paceText"
+                app:layout_constraintEnd_toEndOf="@+id/distanceText"
+                app:layout_constraintStart_toStartOf="@+id/distanceText"
+                app:layout_constraintTop_toBottomOf="@+id/distanceText"
+                app:timeString="@{trainingViewModel.training}"
+                tools:text="Time: 00:30:12" />
+
+            <TextView
+                android:id="@+id/paceText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
+                app:format="@{@string/pace_text}"
+                app:layout_constraintBottom_toTopOf="@+id/speedText"
+                app:layout_constraintEnd_toEndOf="@+id/timeText"
+                app:layout_constraintStart_toStartOf="@+id/timeText"
+                app:layout_constraintTop_toBottomOf="@+id/timeText"
+                app:paceString="@{trainingViewModel.training}"
+                tools:text="Pace: 05:30 m:s/km" />
+
+            <TextView
+                android:id="@+id/speedText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
+                app:format="@{@string/speed_text}"
+                app:layout_constraintBottom_toTopOf="@+id/stopTrainingButton"
+                app:layout_constraintEnd_toEndOf="@+id/paceText"
+                app:layout_constraintStart_toStartOf="@+id/paceText"
+                app:layout_constraintTop_toBottomOf="@+id/paceText"
+                app:speedString="@{trainingViewModel.training}"
+                tools:text="Speed: 4.873 km/h" />
+
+            <Button
+                android:id="@+id/stopTrainingButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
                 android:onClick="@{() -> trainingViewModel.onStopTraining()}"
                 android:text="@string/stop_training"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/textView"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="@+id/textView"
-                app:layout_constraintTop_toBottomOf="@+id/textView" />
+                app:layout_constraintEnd_toEndOf="@+id/speedText"
+                app:layout_constraintStart_toStartOf="@+id/speedText"
+                app:layout_constraintTop_toBottomOf="@+id/speedText" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>
 </layout>
