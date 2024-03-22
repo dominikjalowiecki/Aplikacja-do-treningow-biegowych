@@ -1,8 +1,6 @@
 package pl.toadres.djalowiecki.aplikacjadotreningowbiegowych.screens.training
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -17,10 +15,6 @@ class TrainingViewModel(private val database: TrainingDao, private val trainingI
     private val training = MediatorLiveData<Training>()
 
     fun getTraining() = training
-
-//    private val _navigateToResult = MutableLiveData<Training?>()
-//    val navigateToResult: LiveData<Training?>
-//        get() = _navigateToResult
 
     init {
         training.addSource(database.getTrainingWithId(trainingId), training::setValue)
@@ -38,12 +32,7 @@ class TrainingViewModel(private val database: TrainingDao, private val trainingI
             stoppedTraining.endTimeMilli = System.currentTimeMillis()
 
             update(stoppedTraining)
-
-//            _navigateToResult.value = stoppedTraining
         }
     }
 
-//    fun onResultNavigated() {
-//        _navigateToResult.value = null
-//    }
 }

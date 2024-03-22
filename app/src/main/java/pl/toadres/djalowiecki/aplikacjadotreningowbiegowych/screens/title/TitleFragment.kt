@@ -3,12 +3,14 @@ package pl.toadres.djalowiecki.aplikacjadotreningowbiegowych.screens.title
 import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.PowerManager
 import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.Menu
@@ -32,7 +34,6 @@ import pl.toadres.djalowiecki.aplikacjadotreningowbiegowych.R
 import pl.toadres.djalowiecki.aplikacjadotreningowbiegowych.database.RunnerAppDatabase
 import pl.toadres.djalowiecki.aplikacjadotreningowbiegowych.databinding.FragmentTitleBinding
 import pl.toadres.djalowiecki.aplikacjadotreningowbiegowych.CHANNEL_ID
-
 
 class TitleFragment : Fragment() {
 
@@ -86,6 +87,7 @@ class TitleFragment : Fragment() {
                     isGranted -> {
                         onGranted()
                     }
+
                     else -> {
                         onDenied()
                     }
@@ -104,13 +106,8 @@ class TitleFragment : Fragment() {
         }
 
         if (checkPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
-//            val pm = requireActivity().getSystemService(Context.POWER_SERVICE) as PowerManager?
-//            if (!pm!!.isIgnoringBatteryOptimizations(requireActivity().packageName)) {
-//                val intent = Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS, Uri.fromParts("package", requireActivity().packageName, "TitleFragment"))
-//                startActivity(intent)
-//            }
-
             if (checkPermission(Manifest.permission.ACCESS_BACKGROUND_LOCATION)) {
+                checkBatteryOptimization()
                 titleViewModel.onPermissionsGranted()
             } else {
                 askForBackgroundLocationPermission()
@@ -121,15 +118,24 @@ class TitleFragment : Fragment() {
     }
 
     private fun askForPostNotificationsPermission() {
-        if(ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), Manifest.permission.POST_NOTIFICATIONS)) {
-            requestPermission(Manifest.permission.ACCESS_FINE_LOCATION,  {}, {})
+        if (ActivityCompat.shouldShowRequestPermissionRationale(
+                requireActivity(),
+                Manifest.permission.POST_NOTIFICATIONS
+            )
+        ) {
+            requestPermission(Manifest.permission.ACCESS_FINE_LOCATION, {}, {})
         }
     }
 
     private fun askForLocationPermission() {
-        if(ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION)) {
-            requestPermission(Manifest.permission.ACCESS_FINE_LOCATION,  {
-                if(checkPermission(Manifest.permission.ACCESS_BACKGROUND_LOCATION)) {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(
+                requireActivity(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            )
+        ) {
+            requestPermission(Manifest.permission.ACCESS_FINE_LOCATION, {
+                if (checkPermission(Manifest.permission.ACCESS_BACKGROUND_LOCATION)) {
+                    checkBatteryOptimization()
                     titleViewModel.onPermissionsGranted()
                 } else {
                     askForBackgroundLocationPermission();
@@ -143,14 +149,20 @@ class TitleFragment : Fragment() {
     }
 
     private fun askForBackgroundLocationPermission() {
-        if(ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), Manifest.permission.ACCESS_BACKGROUND_LOCATION)) {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(
+                requireActivity(),
+                Manifest.permission.ACCESS_BACKGROUND_LOCATION
+            )
+        ) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 requestPermission(Manifest.permission.ACCESS_BACKGROUND_LOCATION, {
+                    checkBatteryOptimization()
                     titleViewModel.onPermissionsGranted()
                 }, {
                     permissionsRequired()
                 })
             } else {
+                checkBatteryOptimization()
                 titleViewModel.onPermissionsGranted()
             }
         } else {
@@ -161,7 +173,10 @@ class TitleFragment : Fragment() {
     private fun permissionsRequired() {
         Toast.makeText(requireActivity(), R.string.permissions_required, Toast.LENGTH_LONG)
             .show()
-        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.fromParts("package", requireActivity().packageName, "TitleFragment"))
+        val intent = Intent(
+            Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+            Uri.fromParts("package", requireActivity().packageName, "TitleFragment")
+        )
         startActivity(intent)
     }
 
@@ -178,7 +193,7 @@ class TitleFragment : Fragment() {
     }
 
 
-        override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val menuHost: MenuHost = requireActivity()
 
         menuHost.addMenuProvider(object : MenuProvider {
@@ -193,5 +208,30 @@ class TitleFragment : Fragment() {
                 )
             }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+    }
+
+    private fun checkBatteryOptimization() {
+        val powerManager = requireActivity().getSystemService(Context.POWER_SERVICE) as PowerManager
+        if (!powerManager.isIgnoringBatteryOptimizations(requireActivity().packageName)) {
+            Toast.makeText(
+                requireActivity(),
+                R.string.ignore_battery_optimization,
+                Toast.LENGTH_LONG
+            )
+                .show()
+            try {
+                val intent = Intent(
+                    Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS,
+                    Uri.fromParts("package", requireActivity().packageName, "TitleFragment")
+                )
+                startActivity(intent)
+            } catch (e: ActivityNotFoundException) {
+                val intent = Intent(
+                    Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                    Uri.fromParts("package", requireActivity().packageName, "TitleFragment")
+                )
+                startActivity(intent)
+            }
+        }
     }
 }

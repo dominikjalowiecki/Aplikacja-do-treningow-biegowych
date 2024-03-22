@@ -23,10 +23,11 @@
     <string name="history_cleared_message">History has been cleared</string>
     <string name="header_text">Training history</string>
     <string name="channel_name">Training notifications</string>
-    <string name="channel_description">Notifications informing about the training performe</string>
+    <string name="channel_description">Notifications informing about the performed training</string>
     <string name="menu" translatable="false">Menu</string>
     <string name="training_has_been_started">Training has been started</string>
     <string name="training_in_progress">Training in progress…</string>
+    <string name="training_informations">Training informations</string>
     <string name="time_of_training_have_passed">%1$s of training time have passed</string>
     <string name="distance_of_training_remaining">%1$.3f km of training distance remaining</string>
     <string name="time_of_training_remaining">%1$s of training remaining</string>
@@ -35,4 +36,5 @@
     <string name="training_finished">Training finished</string>
     <string name="check_training_result_in_history">Check training result in history</string>
     <string name="permissions_required">Location and background location permissions are required for this app to work properly</string>
+    <string name="ignore_battery_optimization">Ignore battery optimization for this app to work properly in the background</string>
 </resources>

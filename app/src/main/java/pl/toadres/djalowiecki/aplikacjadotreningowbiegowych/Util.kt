@@ -11,18 +11,14 @@ import java.util.Locale
 
 const val CHANNEL_ID = "training_notifications"
 const val LOCATION_INTERVAL = 5000L
-
-@BindingAdapter("trainingString")
-fun TextView.setTrainingString(item: Training?) {
-    item?.let {
-        text = item.trainingId.toString()
-    }
-}
+const val NOTIFICATION_DISTANCE = 1000 // 1 km
+const val NOTIFICATION_TIME = 900000 // 15 min
+const val MAX_LOCATION_ACCURACY = 30
 
 @BindingAdapter("distanceString", "format")
 fun TextView.setDistanceString(item: Training?, format: String) {
     item?.let {
-        text = format.format(item.distance.toDouble() / 1000)
+        text = format.format(getDistance(item.distance))
     }
 }
 
@@ -42,7 +38,7 @@ fun TextView.setPaceString(item: Training?, format: String) {
             (item.endTimeMilli ?: System.currentTimeMillis()) - item.startTimeMilli
         var paceTimeMilli = 0L
         if (item.distance > 0) {
-            paceTimeMilli = trainingTimeMilli / item.distance * 1000
+            paceTimeMilli = getPace(trainingTimeMilli, item.distance)
         }
         text = format.format(getPaceStringFromMilli(paceTimeMilli))
     }
@@ -66,6 +62,14 @@ fun TextView.setDateString(item: Training?, format: String) {
     item?.let {
         text = format.format(getDate(item.startTimeMilli, "dd.MM.yyyy HH:mm:ss"))
     }
+}
+
+fun getDistance(distance: Int): Double {
+    return distance.toDouble() / 1000
+}
+
+fun getPace(time: Long, distance: Int): Long {
+    return time / distance * 1000
 }
 
 fun getPaceStringFromMilli(timeMilli: Long): String {

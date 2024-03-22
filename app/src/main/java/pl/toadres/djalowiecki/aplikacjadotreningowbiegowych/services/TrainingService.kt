@@ -1,8 +1,6 @@
 package pl.toadres.djalowiecki.aplikacjadotreningowbiegowych.services
 
-import android.app.ForegroundServiceStartNotAllowedException
 import android.app.Notification
-import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
 import android.os.Build
@@ -19,7 +17,6 @@ import androidx.core.content.ContextCompat
 import android.Manifest
 import android.app.NotificationManager
 import android.content.Context
-import android.location.Location.distanceBetween
 import androidx.navigation.NavDeepLinkBuilder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,11 +24,17 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import pl.toadres.djalowiecki.aplikacjadotreningowbiegowych.CHANNEL_ID
 import pl.toadres.djalowiecki.aplikacjadotreningowbiegowych.LOCATION_INTERVAL
+import pl.toadres.djalowiecki.aplikacjadotreningowbiegowych.NOTIFICATION_DISTANCE
+import pl.toadres.djalowiecki.aplikacjadotreningowbiegowych.NOTIFICATION_TIME
+import pl.toadres.djalowiecki.aplikacjadotreningowbiegowych.MAX_LOCATION_ACCURACY
 import pl.toadres.djalowiecki.aplikacjadotreningowbiegowych.MainActivity
 import pl.toadres.djalowiecki.aplikacjadotreningowbiegowych.R
 import pl.toadres.djalowiecki.aplikacjadotreningowbiegowych.database.RunnerAppDatabase
 import pl.toadres.djalowiecki.aplikacjadotreningowbiegowych.database.Training
 import pl.toadres.djalowiecki.aplikacjadotreningowbiegowych.database.TrainingDao
+import pl.toadres.djalowiecki.aplikacjadotreningowbiegowych.getDistance
+import pl.toadres.djalowiecki.aplikacjadotreningowbiegowych.getPace
+import pl.toadres.djalowiecki.aplikacjadotreningowbiegowych.getTimeStringFromMilli
 import timber.log.Timber
 import kotlin.properties.Delegates
 
@@ -45,7 +48,9 @@ class TrainingService : Service() {
     private var trainingId by Delegates.notNull<Long>()
     private var training: Training? = null
     private var lastLocation: Location? = null
+    private var totalDistance = 0
     private var notificationDistance = 0
+    private var notificationTime = 0L
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         trainingId = intent?.getLongExtra("trainingId", 0) ?: 0
@@ -54,37 +59,34 @@ class TrainingService : Service() {
                 training = database.get(trainingId)
             }
         }
-        try {
-            getLocation()
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                startForeground(
-                    1,
-                    getNotification(
-                        R.string.training_has_been_started,
-                        R.string.training_in_progress,
-                        autoCancel = false,
-                        ongoing = true
-                    ),
-                    ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION
+
+        getLocation()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            startForeground(
+                1,
+                getNotification(
+                    getString(R.string.training_has_been_started),
+                    getString(R.string.training_in_progress),
+                    autoCancel = false,
+                    ongoing = true,
+                    null
+                ),
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION
+            )
+        } else {
+            startForeground(
+                1,
+                getNotification(
+                    getString(R.string.training_has_been_started),
+                    getString(R.string.training_in_progress),
+                    autoCancel = false,
+                    ongoing = true,
+                    null
                 )
-            } else {
-                startForeground(
-                    1,
-                    getNotification(
-                        R.string.training_has_been_started,
-                        R.string.training_in_progress,
-                        autoCancel = false,
-                        ongoing = true
-                    )
-                )
-            }
-        } catch (e: Exception) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && e is ForegroundServiceStartNotAllowedException) {
-                Timber.e("Foreground service start not allowed")
-            }
+            )
         }
 
-        return START_NOT_STICKY
+        return START_REDELIVER_INTENT
     }
 
     override fun onBind(intent: Intent?): IBinder? {
@@ -97,58 +99,119 @@ class TrainingService : Service() {
         locationManager = getSystemService(LOCATION_SERVICE) as LocationManager
         locationListener = object : LocationListener {
             override fun onLocationChanged(location: Location) {
-                if (lastLocation != null) {
-                    val distance = FloatArray(1)
-                    distanceBetween(
-                        lastLocation!!.latitude,
-                        lastLocation!!.longitude,
-                        location.latitude,
-                        location.longitude,
-                        distance
-                    )
-
-                    if(distance[0] > 0) {
-                        serviceScope.launch {
-                            updateTrainingDistance(distance[0].toInt())
-                        }
-                    }
-
-                    if(training != null) {
-                        Timber.i(training!!.targetTimeMilli.toString())
-                        if(training!!.targetTimeMilli != null && (System.currentTimeMillis() - training!!.startTimeMilli) >= training!!.targetTimeMilli!!) {
-                            serviceScope.launch {
-                                finishTraining()
-                            }
-                            notify(R.string.training_finished, R.string.check_training_result_in_history)
-                        }
-                    }
-
-//                    notificationDistance += distance[0].toInt()
-//                    if (notificationDistance >= 1000) {
-//                        notificationDistance = 0
-//                        if (training != null) {
-//                            // TODO: Notification every 1 km or 15 min
-//                            // TODO: End training and notification
-//                            if (training!!.targetTimeMilli != null) {
-//                                if (training!!.targetDistance != null) {
-//                                    Timber.i("Twoje aktualne tempo to x m:s/km, a wymagane do ukończenia to y m:s/km. Przyśpiesz!")
-//                                    Timber.i("Twoje tempo biegu jest dobre, tak trzymaj!")
-//                                } else {
-//                                    Timber.i("Pozostało x min treningu")
-//                                }
-//                            } else if (training!!.targetDistance != null) {
-//                                Timber.i("Pozostało x km treningu")
-//                            } else {
-//                                Timber.i("Minęło x min treningu")
-//                            }
-//                        }
-//                    }
+                if (notificationTime == 0L) {
+                    notificationTime = System.currentTimeMillis()
                 }
-                lastLocation = location
+
+                if (location.hasAccuracy() && location.accuracy < MAX_LOCATION_ACCURACY) {
+                    if (lastLocation != null) {
+                        val distanceArray = FloatArray(1)
+                        Location.distanceBetween(
+                            lastLocation!!.latitude,
+                            lastLocation!!.longitude,
+                            location.latitude,
+                            location.longitude,
+                            distanceArray
+                        )
+                        val distance = distanceArray[0].toInt()
+
+                        if (distance > 0) {
+                            serviceScope.launch {
+                                updateTrainingDistance(distance)
+                            }
+                            totalDistance += distance
+                            notificationDistance += distance
+                        }
+
+                        if (training != null) {
+                            val currentTimeMilli =
+                                System.currentTimeMillis() - training!!.startTimeMilli
+                            val targetTimeMilli = training!!.targetTimeMilli
+                            val targetDistance = training!!.targetDistance
+
+                            if ((targetTimeMilli != null && currentTimeMilli >= targetTimeMilli)
+                                || (targetDistance != null && totalDistance >= targetDistance)
+                            ) {
+                                serviceScope.launch {
+                                    finishTraining()
+                                }
+                                notify(
+                                    getString(R.string.training_finished),
+                                    getString(R.string.check_training_result_in_history),
+                                    R.id.historyFragment
+                                )
+                                stopForeground(STOP_FOREGROUND_REMOVE)
+                                stopSelf()
+                                return
+                            }
+
+                            if (notificationDistance >= NOTIFICATION_DISTANCE) {
+                                notificationDistance = 0
+                                if (targetDistance != null && targetTimeMilli == null) {
+                                    notify(
+                                        getString(R.string.training_informations),
+                                        getString(
+                                            R.string.distance_of_training_remaining,
+                                            getDistance(targetDistance - totalDistance)
+                                        ),
+                                        null
+                                    )
+                                }
+                            }
+
+                            if ((System.currentTimeMillis() - notificationTime) >= NOTIFICATION_TIME) {
+                                notificationTime = System.currentTimeMillis()
+                                if (targetTimeMilli != null) {
+                                    if (targetDistance != null) {
+                                        var currentPace = 0L
+                                        if (totalDistance > 0) {
+                                            currentPace = getPace(currentTimeMilli, totalDistance)
+                                        }
+                                        val targetPace = getPace(targetTimeMilli, targetDistance)
+                                        if (currentPace <= targetPace) {
+                                            notify(
+                                                getString(R.string.training_informations),
+                                                getString(R.string.your_running_pace_is_good),
+                                                null,
+                                            )
+                                        } else {
+                                            notify(
+                                                getString(R.string.training_informations),
+                                                getString(R.string.your_running_pace_is_too_slow),
+                                                null,
+                                            )
+                                        }
+                                    } else {
+                                        notify(
+                                            getString(R.string.training_informations),
+                                            getString(
+                                                R.string.time_of_training_remaining,
+                                                getTimeStringFromMilli(targetTimeMilli - currentTimeMilli)
+                                            ),
+                                            null
+                                        )
+                                    }
+                                } else if (targetDistance == null) {
+                                    notify(
+                                        getString(R.string.training_informations),
+                                        getString(
+                                            R.string.time_of_training_have_passed,
+                                            getTimeStringFromMilli(currentTimeMilli)
+                                        ),
+                                        null
+                                    )
+                                }
+                            }
+                        }
+                    }
+                    lastLocation = location
+                }
             }
 
             @Deprecated("Deprecated in Java")
-            override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
+            override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
+            }
+
             override fun onProviderEnabled(provider: String) {}
             override fun onProviderDisabled(provider: String) {}
         }
@@ -176,28 +239,42 @@ class TrainingService : Service() {
         }
     }
 
-    private fun notify(contentTitle: Int, contentText: Int) {
-        notificationManager.notify(2, getNotification(contentTitle, contentText, true,false))
+    private fun notify(contentTitle: String, contentText: String, destination: Int?) {
+        notificationManager.notify(
+            2,
+            getNotification(
+                contentTitle,
+                contentText,
+                autoCancel = true,
+                ongoing = false,
+                destination
+            )
+        )
     }
 
-    private fun getNotification(contentTitle: Int, contentText: Int, autoCancel: Boolean, ongoing: Boolean): Notification {
-//        val notificationIntent = Intent(this, MainActivity::class.java)
-//        val pendingIntent = PendingIntent.getActivity(
-//            this, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE
-//        )
-        val pendingIntent = NavDeepLinkBuilder(this)
-            .setComponentName(MainActivity::class.java)
-            .setGraph(R.navigation.main_navigation)
-            .setDestination(R.id.historyFragment)
-            .createPendingIntent()
+    private fun getNotification(
+        contentTitle: String,
+        contentText: String,
+        autoCancel: Boolean,
+        ongoing: Boolean,
+        destination: Int?
+    ): Notification {
         val builder = NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(R.mipmap.ic_launcher)
-            .setContentTitle(getString(contentTitle))
-            .setContentText(getString(contentText))
-            .setContentIntent(pendingIntent)
+            .setContentTitle(contentTitle)
+            .setContentText(contentText)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setAutoCancel(autoCancel)
             .setOngoing(ongoing)
+
+        if (destination != null) {
+            val pendingIntent = NavDeepLinkBuilder(this)
+                .setComponentName(MainActivity::class.java)
+                .setGraph(R.navigation.main_navigation)
+                .setDestination(destination)
+                .createPendingIntent()
+            builder.setContentIntent(pendingIntent)
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             builder.setForegroundServiceBehavior(Notification.FOREGROUND_SERVICE_IMMEDIATE)

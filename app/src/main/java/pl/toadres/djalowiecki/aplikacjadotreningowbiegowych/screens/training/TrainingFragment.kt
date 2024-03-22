@@ -1,11 +1,6 @@
 package pl.toadres.djalowiecki.aplikacjadotreningowbiegowych.screens.training
 
-import android.app.Notification
-import android.app.NotificationManager
-import android.app.PendingIntent
-import android.content.Context.NOTIFICATION_SERVICE
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -13,20 +8,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
-import androidx.core.app.NotificationCompat
-import androidx.core.content.ContextCompat.getSystemService
-import androidx.core.content.getSystemService
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import pl.toadres.djalowiecki.aplikacjadotreningowbiegowych.CHANNEL_ID
 import pl.toadres.djalowiecki.aplikacjadotreningowbiegowych.MainActivity
 import pl.toadres.djalowiecki.aplikacjadotreningowbiegowych.R
 import pl.toadres.djalowiecki.aplikacjadotreningowbiegowych.database.RunnerAppDatabase
 import pl.toadres.djalowiecki.aplikacjadotreningowbiegowych.databinding.FragmentTrainingBinding
 import pl.toadres.djalowiecki.aplikacjadotreningowbiegowych.services.TrainingService
-import timber.log.Timber
 
 
 class TrainingFragment : Fragment() {
@@ -54,18 +44,9 @@ class TrainingFragment : Fragment() {
 
         binding.trainingViewModel = trainingViewModel
 
-//        trainingViewModel.navigateToResult.observe(viewLifecycleOwner) { stoppedTraining ->
-//            stoppedTraining?.let {
-//                this.findNavController().navigate(
-//                    TrainingFragmentDirections.actionTrainingFragmentToResultFragment(it)
-//                )
-//                trainingViewModel.onResultNavigated()
-//            }
-//        }
-
         trainingViewModel.getTraining().observe(viewLifecycleOwner) { training ->
             training?.let {
-                if(training.endTimeMilli != null) {
+                if (training.endTimeMilli != null) {
                     this.findNavController().navigate(
                         TrainingFragmentDirections.actionTrainingFragmentToResultFragment(training)
                     )
@@ -98,8 +79,6 @@ class TrainingFragment : Fragment() {
         runnable = Runnable {
             binding.invalidateAll()
             handler.postDelayed(runnable, delay)
-            // TODO: End training if targetTimeMillis or targetDistance
-//            getNotification(R.string.training_finished, R.string.check_training_result_in_history)
         }
 
         handler.postDelayed(runnable, delay)
@@ -113,19 +92,5 @@ class TrainingFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         requireActivity().stopService(trainingService)
-    }
-
-    private fun getNotification(contentTitle: Int, contentText: Int) {
-        val builder = NotificationCompat.Builder(requireContext(), CHANNEL_ID)
-            .setSmallIcon(R.mipmap.ic_launcher)
-            .setContentTitle(getString(contentTitle))
-            .setContentText(getString(contentText))
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-
-        val notificationManager = requireActivity().getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-
-        notificationManager.notify(
-            1, builder.build()
-        );
     }
 }

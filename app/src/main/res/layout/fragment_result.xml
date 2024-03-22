@@ -79,7 +79,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
                 app:dateString="@{training}"
                 app:format="@{@string/date_text}"
                 app:layout_constraintBottom_toBottomOf="parent"
