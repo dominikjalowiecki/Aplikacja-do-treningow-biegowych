@@ -65,12 +65,9 @@ class TitleFragment : Fragment() {
 
         binding.lifecycleOwner = this
 
-        return binding.root
-    }
-
-    override fun onResume() {
-        super.onResume()
         checkPermissions()
+
+        return binding.root
     }
 
     private fun checkPermission(permission: String): Boolean {
