@@ -146,12 +146,12 @@ class TitleFragment : Fragment() {
     }
 
     private fun askForBackgroundLocationPermission() {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(
-                requireActivity(),
-                Manifest.permission.ACCESS_BACKGROUND_LOCATION
-            )
-        ) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(
+                    requireActivity(),
+                    Manifest.permission.ACCESS_BACKGROUND_LOCATION
+                )
+            ) {
                 requestPermission(Manifest.permission.ACCESS_BACKGROUND_LOCATION, {
                     checkBatteryOptimization()
                     titleViewModel.onPermissionsGranted()
@@ -159,11 +159,11 @@ class TitleFragment : Fragment() {
                     permissionsRequired()
                 })
             } else {
-                checkBatteryOptimization()
-                titleViewModel.onPermissionsGranted()
+                permissionsRequired()
             }
         } else {
-            permissionsRequired()
+            checkBatteryOptimization()
+            titleViewModel.onPermissionsGranted()
         }
     }
 
