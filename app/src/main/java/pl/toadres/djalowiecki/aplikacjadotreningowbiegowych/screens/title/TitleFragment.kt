@@ -100,6 +100,8 @@ class TitleFragment : Fragment() {
             } else {
                 askForPostNotificationsPermission()
             }
+        } else {
+            createNotificationChannel()
         }
 
         if (checkPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
