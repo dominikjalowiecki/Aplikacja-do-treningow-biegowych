@@ -25,7 +25,7 @@
     <string name="channel_description">Powiadomienia informujące o wykonywanym treningu</string>
     <string name="permissions_required">Do prawidłowego działania tej aplikacji wymagane są uprawnienia do lokalizacji i lokalizacji w tle</string>
     <string name="training_has_been_started">Trening został rozpoczęty</string>
-    <string name="training_in_progress">Traning w toku…</string>
+    <string name="training_in_progress">Trening w toku…</string>
     <string name="training_informations">Informacje o treningu</string>
     <string name="time_of_training_have_passed">Minęło %1$s czasu treningu</string>
     <string name="distance_of_training_remaining">Pozostało %1$.3f km dystansu treningu</string>
